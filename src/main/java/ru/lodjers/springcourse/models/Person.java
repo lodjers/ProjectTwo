@@ -21,20 +21,10 @@ public class Person {
     @Column(name = "age")
     private int age;
 
-    @Temporal(TemporalType.DATE)
-    @Column(name = "date_of_birth")
-    @DateTimeFormat(pattern = "dd/MM/yyyy")
-    private Date dateOfBirth;
-
-    @Column(name = "created_at")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt;
 
     @OneToMany(mappedBy = "owner")
-    private List<Item> items;
+    private List<Book> books;
 
-    @Enumerated(EnumType.STRING)
-    private Mood mood;
     
     public Person() {
 
@@ -66,36 +56,12 @@ public class Person {
         this.age = age;
     }
 
-    public List<Item> getItems() {
-        return items;
+    public List<Book> getBooks() {
+        return books;
     }
 
-    public void setItems(List<Item> items) {
-        this.items = items;
-    }
-
-    public Date getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(Date dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Mood getMood() {
-        return mood;
-    }
-
-    public void setMood(Mood mood) {
-        this.mood = mood;
+    public void setBooks(List<Book> books) {
+        this.books = books;
     }
 
     @Override

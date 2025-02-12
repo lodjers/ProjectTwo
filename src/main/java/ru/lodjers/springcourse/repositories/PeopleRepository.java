@@ -14,4 +14,5 @@ public interface PeopleRepository extends JpaRepository<Person, Integer> {
 
     List<Person> findByNameStartingWith(String startingWith);
 
+
 }

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import ru.lodjers.springcourse.models.Person;
-import ru.lodjers.springcourse.services.ItemService;
+import ru.lodjers.springcourse.services.BookService;
 import ru.lodjers.springcourse.services.PeopleService;
 
 import javax.validation.Valid;
@@ -23,42 +23,36 @@ import java.sql.SQLException;
 public class PeopleController {
 
     private final PeopleService peopleService;
-    private final ItemService itemService;
 
     @Autowired
-    public PeopleController(PeopleService peopleService, ItemService itemService) {
+    public PeopleController(PeopleService peopleService, BookService bookService) {
         this.peopleService = peopleService;
-        this.itemService = itemService;
     }
 
     @GetMapping()
     public String index(Model model) {
         model.addAttribute("people", peopleService.findAll());
 
-        itemService.findByItemName("Airpods");
-        itemService.findByOwner(peopleService.findAll().get(0));
-
-        peopleService.test();
-
-        return "/index";
+        return "people/index";
     }
     @GetMapping("/{id}")
     public String show(@PathVariable("id") int id, Model model) throws SQLException {
         model.addAttribute("person", peopleService.findOne(id));
-        return "/show";
+        model.addAttribute("booksOfPerson", peopleService.booksOfPerson(peopleService.findOne(id)));
+        return "people/show";
     }
 
     @GetMapping("/new")
     public String newPerson(Model model) {
         model.addAttribute("person", new Person());
-        return "/new";
+        return "people/new";
     }
     @PostMapping
     public String create(@ModelAttribute("person") @Valid Person person,
                          BindingResult bindingResult) {
 
         if (bindingResult.hasErrors())
-            return "/new";
+            return "people/new";
 
         peopleService.save(person);
         return "redirect:/people";
@@ -66,14 +60,14 @@ public class PeopleController {
     @GetMapping("/{id}/edit")
     public String edit(Model model, @PathVariable("id") int id) throws SQLException {
         model.addAttribute("person", peopleService.findOne(id));
-        return "/edit";
+        return "people/edit";
     }
     @PatchMapping("/{id}")
     public String update(@ModelAttribute("person") @Valid Person person, BindingResult bindingResult,
                          @PathVariable("id") int id) throws SQLException {
 
         if (bindingResult.hasErrors()) {
-            return "/edit";
+            return "people/edit";
         }
         peopleService.update(id, person);
         return "redirect:/people";

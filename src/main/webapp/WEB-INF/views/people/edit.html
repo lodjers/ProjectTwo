@@ -2,20 +2,20 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Update person</title>
+  <title>New person</title>
 </head>
 <body>
 
 <form th:method="PATCH" th:action="@{/people/{id}(id=${person.getId()})}" th:object="${person}">
   <label for="name">Enter name: </label>
   <input type="text" th:field="*{name}" id="name"/>
-  <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</div>
+  <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Err</div>
   <br/>
-  <label for="age">Enter age: </label>
+  <label for="age">Enter year of birth: </label>
   <input type="text" th:field="*{age}" id="age"/>
-  <div style="color:red" th:if="${#fields.hasErrors('age')}" th:errors="*{age}">Age Error</div>
+  <div style="color:red" th:if="${#fields.hasErrors('age')}" th:errors="*{age}">Err</div>
   <br/>
-  <input type="submit" value="Update!"/>
+  <input type="submit" value="Create!"/>
 </form>
 
 </body>

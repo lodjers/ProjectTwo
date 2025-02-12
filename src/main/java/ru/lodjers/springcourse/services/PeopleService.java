@@ -3,11 +3,11 @@ package ru.lodjers.springcourse.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.lodjers.springcourse.models.Mood;
+import ru.lodjers.springcourse.models.Book;
 import ru.lodjers.springcourse.models.Person;
+import ru.lodjers.springcourse.repositories.BooksRepository;
 import ru.lodjers.springcourse.repositories.PeopleRepository;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,10 +16,12 @@ import java.util.Optional;
 public class PeopleService{
 
     private final PeopleRepository peopleRepository;
+    private final BooksRepository booksRepository;
 
     @Autowired
-    public PeopleService(PeopleRepository peopleRepository) {
+    public PeopleService(PeopleRepository peopleRepository, BooksRepository booksRepository) {
         this.peopleRepository = peopleRepository;
+        this.booksRepository = booksRepository;
     }
 
     public List<Person> findAll() {
@@ -35,9 +37,6 @@ public class PeopleService{
     @Transactional
     public void save(Person person) {
 
-        person.setMood(Mood.CALM);
-        person.setCreatedAt(new Date());
-
         peopleRepository.save(person);
     }
     @Transactional
@@ -49,7 +48,7 @@ public class PeopleService{
     public void delete(int id) {
         peopleRepository.deleteById(id);
     }
-    public void test() {
-        System.out.println("Testing here with debug. Inside Hibernate Transaction");
+    public List<Book> booksOfPerson(Person owner) {
+        return booksRepository.findByOwner(owner);
     }
 }
