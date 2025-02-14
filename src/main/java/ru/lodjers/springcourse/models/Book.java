@@ -1,6 +1,7 @@
 package ru.lodjers.springcourse.models;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "Book")
@@ -23,7 +24,16 @@ public class Book {
     @JoinColumn(name = "person_id", referencedColumnName = "id")
     private Person owner;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "taken_at")
+    private Date takenAt;
+
+    @Transient
+    private boolean overTime;
+
     public Book() {}
+
+
 
     public Book(String bookName, String author, int year) {
         this.bookName = bookName;
@@ -59,7 +69,7 @@ public class Book {
         return year;
     }
 
-    public void setAge(int year) {
+    public void setYear(int year) {
         this.year = year;
     }
 
@@ -69,6 +79,22 @@ public class Book {
 
     public void setOwner(Person owner) {
         this.owner = owner;
+    }
+
+    public Date getTakenAt() {
+        return takenAt;
+    }
+
+    public void setTakenAt(Date takenAt) {
+        this.takenAt = takenAt;
+    }
+
+    public boolean isOverTime() {
+        return overTime;
+    }
+
+    public void setOverTime(boolean overTime) {
+        this.overTime = overTime;
     }
 
     @Override

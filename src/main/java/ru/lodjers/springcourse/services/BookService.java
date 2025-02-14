@@ -1,6 +1,8 @@
 package ru.lodjers.springcourse.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.lodjers.springcourse.models.Book;
@@ -8,6 +10,7 @@ import ru.lodjers.springcourse.models.Person;
 import ru.lodjers.springcourse.repositories.BooksRepository;
 import ru.lodjers.springcourse.repositories.PeopleRepository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,8 +33,29 @@ public class BookService {
     public List<Book> findByOwner(Person owner) {
         return booksRepository.findByOwner(owner);
     }
-    public List<Book> findAll() {
-        return booksRepository.findAll();
+    public List<Book> findAll(boolean sort) {
+        return sort ? booksRepository.findAll(Sort.by("year")) : booksRepository.findAll();
+    }
+    public List<Book> findAllWithPaginationAndSort(int page, int booksPerPage, boolean sort) {
+        if (sort) {
+            return booksRepository.findAll(PageRequest.of(page, booksPerPage, Sort.by("year"))).getContent();
+        } else {
+            return booksRepository.findAll(PageRequest.of(page, booksPerPage)).getContent();
+        }
+    }
+    public List<Book> checkDates(List<Book> bookList) {
+        Date now = new Date();
+        for (Book book : bookList) {
+            if (book.getTakenAt() != null) {
+                int diffInDays = (int) (now.getTime() - book.getTakenAt().getTime()) / (1000 * 60 * 60 * 24);
+                if (diffInDays > 10) {
+                    book.setOverTime(true);
+                } else book.setOverTime(false);
+            } else {
+                book.setOverTime(true);
+            }
+        }
+        return bookList;
     }
     public Book findOne(int id) {
         Optional<Book> foundBook = booksRepository.findById(id);
@@ -69,5 +93,8 @@ public class BookService {
     public void releaseBook(int id) {
         Optional<Book> foundBook = booksRepository.findById(id);
         foundBook.get().setOwner(null);
+    }
+    public List<Book> findBooks(String search) {
+        return booksRepository.findByBookNameStartingWith(search);
     }
 }

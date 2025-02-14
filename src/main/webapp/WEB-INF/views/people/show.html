@@ -11,7 +11,8 @@
 
 <span th:if="${booksOfPerson.isEmpty()}" th:text="'Человек пока не взял ни одной книги'"></span>
 <span th:else th:each="book: ${booksOfPerson}">
-    <a th:text="${book.getBookName() + ', ' + book.getAuthor() +', ' + book.getYear()}">user</a>>
+    <a th:text="${book.getBookName() + ', ' + book.getAuthor() +', ' + book.getYear()}"
+       th:style="${!book.isOverTime()} ? 'color: red;' : 'color: black;'">user</a>>
 </span>
 <br>
 <a th:href="@{/people/{id}/edit(id=${person.getId()})}">Edit</a>

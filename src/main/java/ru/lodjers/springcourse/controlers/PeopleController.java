@@ -23,10 +23,12 @@ import java.sql.SQLException;
 public class PeopleController {
 
     private final PeopleService peopleService;
+    private final BookService bookService;
 
     @Autowired
-    public PeopleController(PeopleService peopleService, BookService bookService) {
+    public PeopleController(PeopleService peopleService, BookService bookService, BookService bookService1) {
         this.peopleService = peopleService;
+        this.bookService = bookService1;
     }
 
     @GetMapping()
@@ -39,6 +41,7 @@ public class PeopleController {
     public String show(@PathVariable("id") int id, Model model) throws SQLException {
         model.addAttribute("person", peopleService.findOne(id));
         model.addAttribute("booksOfPerson", peopleService.booksOfPerson(peopleService.findOne(id)));
+        bookService.checkDates(peopleService.booksOfPerson(peopleService.findOne(id)));
         return "people/show";
     }
 

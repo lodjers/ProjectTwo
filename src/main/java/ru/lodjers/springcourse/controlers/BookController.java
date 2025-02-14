@@ -12,6 +12,9 @@ import ru.lodjers.springcourse.services.PeopleService;
 
 import javax.validation.Valid;
 import java.sql.SQLException;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/books")
@@ -25,10 +28,28 @@ public class BookController {
         this.peopleService = peopleService;
     }
 
+    @GetMapping("/search")
+    public String searchPage() {
+        return "books/search";
+    }
+    @PatchMapping("/search")
+    public String search(@RequestParam String search, Model model) {
+        model.addAttribute("books", bookService.findBooks(search));
+        return "books/search";
+    }
 
-    @GetMapping()
-    public String index(Model model) {
-        model.addAttribute("books", bookService.findAll());
+    @GetMapping
+    public String index(Model model,
+                        @RequestParam(value = "sort_by_year", required = false) boolean sort_by_year,
+                        @RequestParam(value="page", required = false) Integer page,
+                        @RequestParam(value = "books_per_page", required = false) Integer books_per_page) {
+        List<Book> bookList;
+        if (page == null || books_per_page == null) {
+            bookList = bookService.findAll(sort_by_year);
+        } else {
+            bookList = bookService.findAllWithPaginationAndSort(page, books_per_page, sort_by_year);
+        }
+        model.addAttribute("books", bookList);
         return "books/index";
     }
     @GetMapping("/{id}")
@@ -77,11 +98,13 @@ public class BookController {
     @PatchMapping("/{id}/add")
     public String add(@PathVariable("id") int id, @ModelAttribute("person") Person selectedPerson) throws SQLException {
         bookService.add(selectedPerson, id);
+        bookService.findOne(id).setTakenAt(new Date());
         return "redirect:/books/" + id;
     }
     @PatchMapping("/{id}/release")
     public String release(@PathVariable("id") int id) {
         bookService.releaseBook(id);
+        bookService.findOne(id).setTakenAt(null);
         return "redirect:/books/" + id;
     }
 }
