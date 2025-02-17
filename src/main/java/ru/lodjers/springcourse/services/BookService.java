@@ -43,7 +43,7 @@ public class BookService {
             return booksRepository.findAll(PageRequest.of(page, booksPerPage)).getContent();
         }
     }
-    public List<Book> checkDates(List<Book> bookList) {
+    public void checkDates(List<Book> bookList) {
         Date now = new Date();
         for (Book book : bookList) {
             if (book.getTakenAt() != null) {
@@ -55,7 +55,6 @@ public class BookService {
                 book.setOverTime(true);
             }
         }
-        return bookList;
     }
     public Book findOne(int id) {
         Optional<Book> foundBook = booksRepository.findById(id);
@@ -85,6 +84,7 @@ public class BookService {
     public void add(Person selectedPerson, int bookId) {
 
         Optional<Book> foundBook = booksRepository.findById(bookId);
+        foundBook.get().setTakenAt(new Date());
 
         foundBook.get().setOwner(selectedPerson);
     }
@@ -92,6 +92,7 @@ public class BookService {
     @Transactional
     public void releaseBook(int id) {
         Optional<Book> foundBook = booksRepository.findById(id);
+        foundBook.get().setTakenAt(null);
         foundBook.get().setOwner(null);
     }
     public List<Book> findBooks(String search) {

@@ -41,7 +41,6 @@ public class PeopleController {
     public String show(@PathVariable("id") int id, Model model) throws SQLException {
         model.addAttribute("person", peopleService.findOne(id));
         model.addAttribute("booksOfPerson", peopleService.booksOfPerson(peopleService.findOne(id)));
-        bookService.checkDates(peopleService.booksOfPerson(peopleService.findOne(id)));
         return "people/show";
     }
 

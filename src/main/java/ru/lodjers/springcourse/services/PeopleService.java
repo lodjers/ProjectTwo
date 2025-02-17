@@ -18,10 +18,14 @@ public class PeopleService{
     private final PeopleRepository peopleRepository;
     private final BooksRepository booksRepository;
 
+    private final BookService bookService;
+
     @Autowired
-    public PeopleService(PeopleRepository peopleRepository, BooksRepository booksRepository) {
+    public PeopleService(PeopleRepository peopleRepository, BooksRepository booksRepository, BookService bookService) {
         this.peopleRepository = peopleRepository;
         this.booksRepository = booksRepository;
+        this.bookService = bookService;
+
     }
 
     public List<Person> findAll() {
@@ -49,6 +53,7 @@ public class PeopleService{
         peopleRepository.deleteById(id);
     }
     public List<Book> booksOfPerson(Person owner) {
+        bookService.checkDates(booksRepository.findByOwner(owner));
         return booksRepository.findByOwner(owner);
     }
 }
